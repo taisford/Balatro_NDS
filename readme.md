@@ -1,41 +1,63 @@
-# ROM Template (ARM9)
+# Balatro DS
 
-## 1. Introduction
+**An unofficial homebrew port project aiming to bring Balatro to the Nintendo DS.**
 
-This template contains code to build a project with custom ARM9 and an ARM7
-provided by BlocksDS SDK.
+Balatro DS is a personal, non-commercial development project created for learning, experimentation, and exploring the capabilities of Nintendo DS homebrew development.
 
-Build it with the following command:
+The goal is to recreate the original PC version of *Balatro* as faithfully as possible on Nintendo DS hardware, aiming for a 1:1 gameplay experience while adapting the game's systems, interface, and presentation to the limitations of the console.
 
-```bash
-make
-```
+This project is developed independently and is not affiliated with, endorsed by, or associated with the original developers or publishers of Balatro.
 
-This should have generated a NDS ROM that you can run on any emulator or
-flashcart.
+## Project Goals
 
-To do a verbose build, run `make` like this (this also works for the Makefile
-of the SDK):
+- Recreate the core gameplay mechanics of the original PC version.
+- Implement poker hand evaluation and scoring as faithfully as possible.
+- Reproduce the original game's progression systems, rounds, and economy.
+- Adapt the user interface and controls to the Nintendo DS.
+- Explore the feasibility of a high-fidelity Balatro experience on original DS hardware.
+- Learn and improve through low-level development and reverse engineering of game behavior.
 
-```bash
-VERBOSE=1 make
-```
+## Current Status
 
-## 2. Makefile instructions
+**Early development — playable prototype.**
 
-The paths in the Makefile that refer to source code, includes, graphics, data,
-etc, must be inside the folder of the project. That means you can't use `..`
-in a path to go one level up from the Makefile.
+Currently implemented:
+- Standard 52-card deck generation and shuffling.
+- Eight-card player hand.
+- Card selection using the Nintendo DS controls.
+- Basic poker hand evaluation.
+- Initial chip and multiplier calculations.
+- Basic text-based interface.
 
-If you really need to use folders outside of the folder of the project, create a
-symlink to the destination, or build the other code as a static library and link
-it with the project.
+Planned:
+- Round progression, scoring targets, and win/loss conditions.
+- Hand and discard limits.
+- Card replacement and deck management.
+- Jokers, card enhancements, and other original gameplay mechanics.
+- Graphical cards and a more faithful interface.
+- Further optimization for Nintendo DS hardware.
+
+Features and compatibility may change as development progresses.
+
+## Development
+
+The project is written in C using [BlocksDS](https://blocksds.skylyrac.net/), targeting Nintendo DS homebrew.
+
+The original PC game is used as a behavioral reference for understanding and reproducing gameplay mechanics. This project does not attempt to run the original PC executable directly.
+
+## Disclaimer
+
+Balatro is the property of its respective developers and rights holders. This is an unofficial, independent fan project intended for educational and non-commercial purposes.
+
+This repository does not intend to distribute the original game's proprietary assets or game files. Users must obtain the original game and its content through legitimate means.
+
+No affiliation with or endorsement by the original developers or publishers is implied.
+
+## Contributions
+
+Suggestions, bug reports, and technical discussion are welcome. The project is currently experimental, and its implementation may differ from the original game in many areas.
 
 ## License
 
-This template is licensed under the following license:
+The licensing status of this project and its original code will be specified separately. Original Balatro assets, code, and other proprietary materials remain subject to their respective rights holders.
 
-**CC0 1.0 Universal (CC0 1.0)**
-**Public Domain Dedication**
-
-You may use this code and modify it without the need to give credit in any way.
