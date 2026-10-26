@@ -15,7 +15,9 @@ typedef enum {
 
 static Deck deck;
 static Card hand[HAND_SIZE];
+static int hand_count = HAND_SIZE;
 static int selected[HAND_SIZE];
+
 static int cursor = 0;
 static int selected_count = 0;
 
@@ -25,11 +27,16 @@ static int show_result = 0;
 
 static void start_test_game(void)
 {
+
     deck_init(&deck);
     deck_shuffle(&deck);
 
+    hand_count = 0;
+
     for (int i = 0; i < HAND_SIZE; i++) {
-        deck_draw(&deck, &hand[i]);
+    if (deck_draw(&deck, &hand[i])) {
+        hand_count++;
+    }
         selected[i] = 0;
     }
 
@@ -39,12 +46,43 @@ static void start_test_game(void)
 }
 
 
+static void remove_selected_and_draw(void)
+{
+    int write_index = 0;
+
+    /* Conservar únicamente las cartas no seleccionadas. */
+    for (int i = 0; i < hand_count; i++) {
+        if (!selected[i]) {
+            hand[write_index++] = hand[i];
+        }
+    }
+
+    /* Las cartas seleccionadas desaparecen de la mano. */
+    hand_count = write_index;
+
+    /* Robar reemplazos mientras queden cartas en la baraja. */
+    while (hand_count < HAND_SIZE) {
+        if (!deck_draw(&deck, &hand[hand_count]))
+            break;
+
+        hand_count++;
+    }
+
+    for (int i = 0; i < HAND_SIZE; i++) {
+        selected[i] = 0;
+    }
+
+    selected_count = 0;
+    cursor = 0;
+}
+
+
 static void evaluate_selection(void)
 {
     Card chosen[5];
     int count = 0;
 
-    for (int i = 0; i < HAND_SIZE; i++) {
+    for (int i = 0; i < hand_count; i++) {
         if (selected[i] && count < 5) {
             chosen[count++] = hand[i];
         }
@@ -75,7 +113,7 @@ static void draw_screen(GameScreen screen)
     printf("PARTIDA DE PRUEBA\n");
     printf("Seleccion: %d/5\n\n", selected_count);
 
-    for (int i = 0; i < HAND_SIZE; i++) {
+    for (int i = 0; i < hand_count; i++) {
         printf("%c %c %s de %s\n",
                i == cursor ? '>' : ' ',
                selected[i] ? '*' : ' ',
@@ -136,52 +174,40 @@ int main(void)
             }
 
             if (keys & KEY_RIGHT) {
-                if (cursor < HAND_SIZE - 1)
-                    cursor++;
-                redraw = 1;
-            }
+    		if (cursor < hand_count - 1)
+        	    cursor++;
+    		redraw = 1;
+	    }
 
             if (keys & KEY_A) {
-                if (selected[cursor]) {
-                    selected[cursor] = 0;
-                    selected_count--;
-                } else if (selected_count < 5) {
-                    selected[cursor] = 1;
-                    selected_count++;
-                }
-
-                show_result = 0;
-                redraw = 1;
-            }
+    		if (hand_count > 0) {
+        	    if (selected[cursor]) {
+            		selected[cursor] = 0;
+            	    	selected_count--;
+        	    } else if (selected_count < 5) {
+            		selected[cursor] = 1;
+            	    	selected_count++;
+        	    }
+        	show_result = 0;
+        	redraw = 1;
+    	        }
+	    }
 
             if (keys & KEY_Y) {
-                evaluate_selection();
-                redraw = 1;
-            }
-
-            if (keys & KEY_X) {
-                int write_index = 0;
-
-                for (int i = 0; i < HAND_SIZE; i++) {
-                    if (!selected[i]) {
-                        hand[write_index++] = hand[i];
-                    }
-                }
-
-                while (write_index < HAND_SIZE) {
-                    if (!deck_draw(&deck, &hand[write_index]))
-                        break;
-                    write_index++;
-                }
-
-                for (int i = 0; i < HAND_SIZE; i++)
-                    selected[i] = 0;
-
-                selected_count = 0;
-                cursor = 0;
-                show_result = 0;
-                redraw = 1;
-            }
+                if (selected_count > 0) {
+        	    evaluate_selection();
+        	    remove_selected_and_draw();
+        	    redraw = 1;
+    		}
+	    }
+	
+	    if (keys & KEY_X) {
+    		if (selected_count > 0) {
+        	remove_selected_and_draw();
+        	show_result = 0;
+        	redraw = 1;
+    	    }
+}
         }
 
         if (redraw)
