@@ -1,4 +1,6 @@
-# Balatro DS
+<p align="center">
+  <img src="balatro.png" width="450" alt="Balatro">
+</p>
 
 **An unofficial homebrew port project aiming to bring Balatro to the Nintendo DS.**
 
