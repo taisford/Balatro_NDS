@@ -63,3 +63,17 @@ Suggestions, bug reports, and technical discussion are welcome. The project is c
 
 The licensing status of this project and its original code will be specified separately. Original Balatro assets, code, and other proprietary materials remain subject to their respective rights holders.
 
+## support
+
+If you’d like, you can help me—BUT PLEASE, support the creators of the original projects first (in this case, LocalThunk)
+
+Without your support, many of these projects—whether from small studios or hobbyists—would not be possible. Thank you very much
+
+  
+  [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B2Z629HLFH)
+
+<p align="center">
+  <a href="https://store.steampowered.com/app/2379780/Balatro/">
+  <img src="https://lh5.googleusercontent.com/proxy/fi2zff--j67k1ZmoGJrtXi56Et1__2Mvz7ZSUsIgxIGhHeL9rX2YR-EbIFOMK07778D2gfWKZqnF0ZkrcJwkfOXBqIoXdw" alt="Buy now on Steam" width="300">
+</a>
+</p>
