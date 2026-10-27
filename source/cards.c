@@ -29,11 +29,12 @@ void deck_init(Deck *deck)
     }
 
     deck->next_card = 0;
+    deck->card_count = DECK_SIZE;
 }
 
 void deck_shuffle(Deck *deck)
 {
-    for (int i = DECK_SIZE - 1; i > 0; i--) {
+    for (int i = deck->card_count - 1; i > 0; i--) {
         int j = rand() % (i + 1);
 
         Card temp = deck->cards[i];
@@ -46,7 +47,7 @@ void deck_shuffle(Deck *deck)
 
 int deck_draw(Deck *deck, Card *card)
 {
-    if (deck->next_card >= DECK_SIZE)
+    if (deck->next_card >= deck->card_count)
         return 0;
 
     *card = deck->cards[deck->next_card++];

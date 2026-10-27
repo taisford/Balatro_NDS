@@ -15,8 +15,15 @@ typedef enum {
 
 static Deck deck;
 static Card hand[HAND_SIZE];
-static int hand_count = HAND_SIZE;
+static int hand_count = 0;
 static int selected[HAND_SIZE];
+
+static Card discard_pile[DECK_SIZE];
+static int discard_count = 0;
+
+static int hands_remaining = 4;
+static int discards_remaining = 3;
+static int game_over = 0;
 
 static int cursor = 0;
 static int selected_count = 0;
@@ -25,24 +32,75 @@ static PokerResult result;
 static ScoreResult score;
 static int show_result = 0;
 
+static void refill_hand(void);
+
 static void start_test_game(void)
 {
-
     deck_init(&deck);
     deck_shuffle(&deck);
 
     hand_count = 0;
+    discard_count = 0;
+
+    hands_remaining = 4;
+    discards_remaining = 3;
+    game_over = 0;
+
+    selected_count = 0;
+    cursor = 0;
+    show_result = 0;
 
     for (int i = 0; i < HAND_SIZE; i++) {
-    if (deck_draw(&deck, &hand[i])) {
-        hand_count++;
-    }
         selected[i] = 0;
     }
 
-    cursor = 0;
-    selected_count = 0;
-    show_result = 0;
+    refill_hand();
+}
+
+
+static void discard_card(Card card)
+{
+    if (discard_count < DECK_SIZE) {
+        discard_pile[discard_count++] = card;
+    }
+}
+
+static int draw_card(Card *card)
+{
+    if (deck_draw(&deck, card)) {
+        return 1;
+    }
+
+    if (discard_count == 0) {
+        return 0;
+    }
+
+    /* Copiar el descarte al mazo. */
+    for (int i = 0; i < discard_count; i++) {
+        deck.cards[i] = discard_pile[i];
+    }
+
+    /* El mazo reciclado solo contiene esas cartas. */
+    deck.card_count = discard_count;
+    deck.next_card = 0;
+    deck_shuffle(&deck);
+
+    discard_count = 0;
+
+    return deck_draw(&deck, card);
+}
+
+
+
+static void refill_hand(void)
+{
+    while (hand_count < HAND_SIZE) {
+        if (!draw_card(&hand[hand_count])) {
+            break;
+        }
+
+        hand_count++;
+    }
 }
 
 
@@ -50,23 +108,15 @@ static void remove_selected_and_draw(void)
 {
     int write_index = 0;
 
-    /* Conservar únicamente las cartas no seleccionadas. */
     for (int i = 0; i < hand_count; i++) {
-        if (!selected[i]) {
+        if (selected[i]) {
+            discard_card(hand[i]);
+        } else {
             hand[write_index++] = hand[i];
         }
     }
 
-    /* Las cartas seleccionadas desaparecen de la mano. */
     hand_count = write_index;
-
-    /* Robar reemplazos mientras queden cartas en la baraja. */
-    while (hand_count < HAND_SIZE) {
-        if (!deck_draw(&deck, &hand[hand_count]))
-            break;
-
-        hand_count++;
-    }
 
     for (int i = 0; i < HAND_SIZE; i++) {
         selected[i] = 0;
@@ -74,7 +124,10 @@ static void remove_selected_and_draw(void)
 
     selected_count = 0;
     cursor = 0;
+
+    refill_hand();
 }
+
 
 
 static void evaluate_selection(void)
@@ -110,8 +163,20 @@ static void draw_screen(GameScreen screen)
         return;
     }
 
+
     printf("PARTIDA DE PRUEBA\n");
+    printf("Manos: %d | Descartes: %d\n",
+           hands_remaining, discards_remaining);
+    printf("Mazo: %d | Descarte: %d\n",
+           deck.card_count - deck.next_card, discard_count);
     printf("Seleccion: %d/5\n\n", selected_count);
+
+    if (game_over) {
+        printf("FIN DE LA PARTIDA\n");
+        printf("Pulsa B para volver al titulo\n");
+        return;
+    }
+
 
     for (int i = 0; i < hand_count; i++) {
         printf("%c %c %s de %s\n",
@@ -193,25 +258,45 @@ int main(void)
     	        }
 	    }
 
+            
             if (keys & KEY_Y) {
-                if (selected_count > 0) {
-        	    evaluate_selection();
-        	    remove_selected_and_draw();
-        	    redraw = 1;
-    		}
-	    }
-	
-	    if (keys & KEY_X) {
-    		if (selected_count > 0) {
-        	remove_selected_and_draw();
-        	show_result = 0;
-        	redraw = 1;
-    	    }
-}
-        }
+                if (!game_over && hands_remaining > 0 &&
+                    selected_count > 0) {
 
-        if (redraw)
-            draw_screen(screen);
+                        evaluate_selection();
+
+                        hands_remaining--;
+                        remove_selected_and_draw();
+
+                        if (hands_remaining == 0 &&
+                            discards_remaining == 0) {
+                            game_over = 1;
+                        }
+                    redraw = 1;
+                }
+            }
+
+            if (keys & KEY_X) {
+                if (!game_over && discards_remaining > 0 &&
+                selected_count > 0) {
+
+                    discards_remaining--;
+                    show_result = 0;
+                    remove_selected_and_draw();
+
+                    if (hands_remaining == 0 &&
+                    discards_remaining == 0) {
+                        game_over = 1;
+                    }
+                redraw = 1;
+                }
+            }
+
+
+                    if (redraw) {
+                draw_screen(screen);
+            }
+        }
     }
 
     return 0;

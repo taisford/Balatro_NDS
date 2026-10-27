@@ -39,6 +39,7 @@ typedef struct {
 typedef struct {
     Card cards[DECK_SIZE];
     int next_card;
+    int card_count;
 } Deck;
 
 void deck_init(Deck *deck);

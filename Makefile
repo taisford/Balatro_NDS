@@ -14,7 +14,7 @@ ARM_NONE_EABI_PATH	?= $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-arm-none-eabi/bin/
 NAME		:= balatro_ds
 
 GAME_TITLE	:= Balatro DS
-GAME_SUBTITLE	:= Poker roguelike
+GAME_SUBTITLE	:=
 GAME_AUTHOR	:= 0xT4D
 GAME_ICON	:= icon.gif
 
