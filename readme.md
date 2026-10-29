@@ -1,3 +1,5 @@
+**Languages:** English | [Español](readme.es.md) | [Français](readme.fr.md) | [日本語](readme.ja.md)
+
 <p align="center">
   <img src="media/balatro.png" width="450" alt="Balatro">
 </p>
