@@ -1,5 +1,4 @@
 *.nds
 *.sav
-*.vscode
 build
 compile_commands.json

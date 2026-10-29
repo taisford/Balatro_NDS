@@ -7,6 +7,7 @@
 #include "cards.h"
 #include "poker.h"
 #include "scoring.h"
+#include "economy.h"
 
 typedef enum
 {
@@ -34,6 +35,8 @@ static Card hand[HAND_SIZE];
 static int hand_count = 0;
 static int selected[HAND_SIZE];
 static RoundState round_state;
+static int money = 4;
+static int last_reward = 0;
 
 static Card discard_pile[DECK_SIZE];
 static int discard_count = 0;
@@ -71,6 +74,9 @@ static void reset_blind_deck(void)
 
 static void start_test_game(void)
 {
+    money = 4;
+    last_reward = 0;
+
     deck_init(&deck);
     deck_shuffle(&deck);
 
@@ -133,6 +139,11 @@ static void update_blind_target(void)
 
 static void advance_blind(void)
 {
+    int reward = economy_blind_reward(round_state.blind) + economy_remaining_hands_bonus(hands_remaining);
+
+    money += reward;
+    last_reward = reward;
+
     switch (round_state.blind)
     {
     case BLIND_SMALL:
@@ -297,6 +308,8 @@ static void draw_screen(GameScreen screen)
 
     printf("Objetivo: %d\n", round_state.target_score);
     printf("Puntuacion: %d\n\n", round_state.current_score);
+    printf("Dinero: $%d\n", money);
+    printf("Ultima recompensa: $%d\n\n", last_reward);
 
     if (game_over)
     {
