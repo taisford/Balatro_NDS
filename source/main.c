@@ -8,6 +8,12 @@
 #include "poker.h"
 #include "scoring.h"
 #include "economy.h"
+#include "jokers.h"
+
+static Joker jokers[MAX_JOKERS] = {
+    {JOKER_BONUS_CHIPS, 20}};
+
+static int joker_count = 1;
 
 typedef enum
 {
@@ -309,7 +315,8 @@ static void evaluate_selection(void)
     if (count > 0)
     {
         result = poker_evaluate(chosen, count);
-        score = score_hand(chosen, count, &result);
+        score = score_hand(chosen, count, &result,
+                           jokers, joker_count);
         show_result = 1;
     }
 }
