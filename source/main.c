@@ -37,6 +37,8 @@ static int selected[HAND_SIZE];
 static RoundState round_state;
 static int money = 4;
 static int last_reward = 0;
+static PrintConsole topScreen;
+static PrintConsole bottomScreen;
 
 static Card discard_pile[DECK_SIZE];
 static int discard_count = 0;
@@ -47,6 +49,7 @@ static int game_over = 0;
 
 static int cursor = 0;
 static int selected_count = 0;
+static int sort_mode = 0;
 
 static PokerResult result;
 static ScoreResult score;
@@ -76,6 +79,7 @@ static void start_test_game(void)
 {
     money = 4;
     last_reward = 0;
+    sort_mode = 0;
 
     deck_init(&deck);
     deck_shuffle(&deck);
@@ -247,6 +251,48 @@ static void remove_selected_and_draw(void)
     refill_hand();
 }
 
+static int card_value_desc(const void *a, const void *b)
+{
+    const Card *ca = (const Card *)a;
+    const Card *cb = (const Card *)b;
+
+    return (int)cb->rank - (int)ca->rank;
+}
+
+static int card_suit_value(const void *a, const void *b)
+{
+    const Card *ca = (const Card *)a;
+    const Card *cb = (const Card *)b;
+
+    if (ca->suit != cb->suit)
+    {
+        return (int)ca->suit - (int)cb->suit;
+    }
+
+    return (int)cb->rank - (int)ca->rank;
+}
+
+static void sort_hand(void)
+{
+    if (hand_count < 2)
+    {
+        return;
+    }
+
+    if (sort_mode == 0)
+    {
+        qsort(hand, hand_count, sizeof(Card), card_suit_value);
+        sort_mode = 1;
+    }
+    else
+    {
+        qsort(hand, hand_count, sizeof(Card), card_value_desc);
+        sort_mode = 0;
+    }
+
+    cursor = 0;
+}
+
 static void evaluate_selection(void)
 {
     Card chosen[5];
@@ -270,6 +316,7 @@ static void evaluate_selection(void)
 
 static void draw_screen(GameScreen screen)
 {
+    consoleSelect(&topScreen);
     consoleClear();
 
     printf("BALATRO DS\n");
@@ -318,6 +365,8 @@ static void draw_screen(GameScreen screen)
         return;
     }
 
+    consoleSelect(&bottomScreen);
+    consoleClear();
     for (int i = 0; i < hand_count; i++)
     {
         printf("%c %c %s de %s\n",
@@ -346,7 +395,22 @@ static void draw_screen(GameScreen screen)
 
 int main(void)
 {
-    consoleDemoInit();
+    videoSetMode(MODE_0_2D);
+    videoSetModeSub(MODE_0_2D);
+
+    vramSetBankA(VRAM_A_MAIN_BG);
+    vramSetBankC(VRAM_C_SUB_BG);
+
+    consoleInit(&topScreen, 0, BgType_Text4bpp,
+                BgSize_T_256x256, 31, 0,
+                true, true);
+
+    consoleInit(&bottomScreen, 0, BgType_Text4bpp,
+                BgSize_T_256x256, 31, 0,
+                false, true);
+
+    consoleSelect(&bottomScreen);
+
     srand((unsigned int)time(NULL));
 
     GameScreen screen = SCREEN_TITLE;
@@ -373,7 +437,12 @@ int main(void)
         {
             if (keys & KEY_B)
             {
-                screen = SCREEN_TITLE;
+                for (int i = 0; i < HAND_SIZE; i++)
+                {
+                    selected[i] = 0;
+                }
+
+                selected_count = 0;
                 redraw = 1;
             }
 
@@ -388,6 +457,12 @@ int main(void)
             {
                 if (cursor < hand_count - 1)
                     cursor++;
+                redraw = 1;
+            }
+
+            if (keys & KEY_R)
+            {
+                sort_hand();
                 redraw = 1;
             }
 
