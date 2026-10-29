@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="balatro.png" width="450" alt="Balatro">
+  <img src="media/balatro.png" width="450" alt="Balatro">
 </p>
 
 **An unofficial homebrew port project aiming to bring Balatro to the Nintendo DS.**
 
 Balatro DS is a personal, non-commercial development project created for learning, experimentation, and exploring the capabilities of Nintendo DS homebrew development.
 
-The goal is to recreate the original PC version of *Balatro* as faithfully as possible on Nintendo DS hardware, aiming for a 1:1 gameplay experience while adapting the game's systems, interface, and presentation to the limitations of the console.
+The goal is to recreate the original PC version of _Balatro_ as faithfully as possible on Nintendo DS hardware, aiming for a 1:1 gameplay experience while adapting the game's systems, interface, and presentation to the limitations of the console.
 
 This project is developed independently and is not affiliated with, endorsed by, or associated with the original developers or publishers of Balatro.
 
@@ -21,25 +21,36 @@ This project is developed independently and is not affiliated with, endorsed by,
 
 ## Current Status
 
-**Early development — playable prototype.**
+**In active development — early playable prototype.**
 
-Currently implemented:
+The project is currently a basic, text-based prototype. The following features are implemented:
+
 - Standard 52-card deck generation and shuffling.
-- Eight-card player hand.
-- Card selection using the Nintendo DS controls.
+- An eight-card starting hand.
+- Card navigation and selection using the Nintendo DS controls.
 - Basic poker hand evaluation.
-- Initial chip and multiplier calculations.
-- Basic text-based interface.
+- Initial chip, multiplier, and final score calculations.
+- Basic card playing and discarding, including the ability to empty the hand.
+
+The core gameplay loop is still incomplete. Current work is focused on building the foundations before moving on to the full round-based experience.
+
+
+<p align="center">
+  <img src="media/bal1.png" width="250" alt="Balatro">
+  <img src="media/bal2.png" width="250" alt="Balatro">
+  <img src="media/bal3.png" width="250" alt="Balatro">
+</p>
 
 Planned:
-- Round progression, scoring targets, and win/loss conditions.
+
+- Round progression, blinds, scoring targets, and win/loss conditions.
 - Hand and discard limits.
-- Card replacement and deck management.
-- Jokers, card enhancements, and other original gameplay mechanics.
-- Graphical cards and a more faithful interface.
+- Drawing replacement cards and managing the deck between plays.
+- Jokers, card enhancements, and other gameplay mechanics.
+- Graphical cards, animations, and a more faithful interface adapted to the Nintendo DS dual screens.
 - Further optimization for Nintendo DS hardware.
 
-Features and compatibility may change as development progresses.
+This is an early work in progress; features and compatibility may change as development continues.
 
 ## Development
 
@@ -69,8 +80,7 @@ If you’d like, you can help me—BUT PLEASE, support the creators of the origi
 
 Without your support, many of these projects—whether from small studios or hobbyists—would not be possible. Thank you very much
 
-  
-  [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B2Z629HLFH)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B2Z629HLFH)
 
 <p align="center">
   <a href="https://store.steampowered.com/app/2379780/Balatro/">
