@@ -10,10 +10,8 @@
 #include "economy.h"
 #include "jokers.h"
 
-static Joker jokers[MAX_JOKERS] = {
-    {JOKER_BONUS_CHIPS, 20}};
-
-static int joker_count = 1;
+static Joker jokers[MAX_JOKERS] = {0};
+static int joker_count = 0;
 
 typedef enum
 {
@@ -92,6 +90,7 @@ static void start_test_game(void)
 
     hand_count = 0;
     discard_count = 0;
+    joker_count = 0;
 
     hands_remaining = 4;
     discards_remaining = 3;
@@ -104,6 +103,12 @@ static void start_test_game(void)
     selected_count = 0;
     cursor = 0;
     show_result = 0;
+
+    for (int i = 0; i < MAX_JOKERS; i++)
+    {
+        jokers[i].type = JOKER_NONE;
+        jokers[i].value = 0;
+    }
 
     for (int i = 0; i < HAND_SIZE; i++)
     {
