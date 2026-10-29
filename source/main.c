@@ -9,14 +9,19 @@
 #include "scoring.h"
 #include "economy.h"
 #include "jokers.h"
+#include "shop.h"
 
 static Joker jokers[MAX_JOKERS] = {0};
 static int joker_count = 0;
+static ShopOffer shop_offers[SHOP_OFFER_COUNT];
+static int shop_cursor = 0;
+static int shop_message = 0;
 
 typedef enum
 {
     SCREEN_TITLE,
-    SCREEN_TEST
+    SCREEN_TEST,
+    SCREEN_SHOP
 } GameScreen;
 
 typedef enum
@@ -154,11 +159,6 @@ static void update_blind_target(void)
 
 static void advance_blind(void)
 {
-    int reward = economy_blind_reward(round_state.blind) + economy_remaining_hands_bonus(hands_remaining);
-
-    money += reward;
-    last_reward = reward;
-
     switch (round_state.blind)
     {
     case BLIND_SMALL:
@@ -184,6 +184,19 @@ static void advance_blind(void)
     show_result = 0;
 
     reset_blind_deck();
+}
+
+static void open_shop(void);
+
+static void complete_blind(GameScreen *screen)
+{
+    int reward = economy_blind_reward(round_state.blind) + economy_remaining_hands_bonus(hands_remaining);
+
+    money += reward;
+    last_reward = reward;
+
+    open_shop();
+    *screen = SCREEN_SHOP;
 }
 
 static void discard_card(Card card)
@@ -326,6 +339,13 @@ static void evaluate_selection(void)
     }
 }
 
+static void open_shop(void)
+{
+    shop_generate_offers(shop_offers);
+    shop_cursor = 0;
+    shop_message = 0;
+}
+
 static void draw_screen(GameScreen screen)
 {
     consoleSelect(&topScreen);
@@ -339,6 +359,37 @@ static void draw_screen(GameScreen screen)
         printf("Prototipo de desarrollo\n\n");
         printf("A - Iniciar prueba\n");
         printf("START - Salir\n");
+        return;
+    }
+
+    if (screen == SCREEN_SHOP)
+    {
+        printf("TIENDA\n");
+        printf("========================\n\n");
+        printf("Dinero: $%d\n", money);
+        printf("Jokers: %d/%d\n\n", joker_count, MAX_JOKERS);
+
+        for (int i = 0; i < SHOP_OFFER_COUNT; i++)
+        {
+            printf("%c %s - $%d\n",
+                   i == shop_cursor ? '>' : ' ',
+                   shop_offers[i].name,
+                   shop_offers[i].price);
+            printf("  +%d chips\n\n",
+                   shop_offers[i].joker.value);
+        }
+
+        printf("Cruceta: elegir oferta\n");
+        printf("A: comprar Joker\n");
+        printf("B: continuar\n");
+
+        if (shop_message == 1)
+            printf("\nCompra realizada");
+        else if (shop_message == 2)
+            printf("\nDinero insuficiente");
+        else if (shop_message == 3)
+            printf("\nNo hay espacio para mas Jokers");
+
         return;
     }
 
@@ -445,6 +496,55 @@ int main(void)
             screen = SCREEN_TEST;
             redraw = 1;
         }
+        else if (screen == SCREEN_SHOP)
+        {
+            if (keys & KEY_UP)
+            {
+                if (shop_cursor > 0)
+                    shop_cursor--;
+
+                redraw = 1;
+            }
+
+            if (keys & KEY_DOWN)
+            {
+                if (shop_cursor < SHOP_OFFER_COUNT - 1)
+                    shop_cursor++;
+
+                redraw = 1;
+            }
+
+            if (keys & KEY_A)
+            {
+                if (joker_count >= MAX_JOKERS)
+                {
+                    shop_message = 3;
+                }
+                else if (money < shop_offers[shop_cursor].price)
+                {
+                    shop_message = 2;
+                }
+                else if (shop_buy_joker(&shop_offers[shop_cursor],
+                                        jokers, &joker_count,
+                                        MAX_JOKERS, &money))
+                {
+                    shop_message = 1;
+                }
+
+                redraw = 1;
+            }
+
+            if (keys & KEY_B)
+            {
+                advance_blind();
+                screen = SCREEN_TEST;
+                redraw = 1;
+            }
+
+            if (redraw)
+                draw_screen(screen);
+        }
+
         else if (screen == SCREEN_TEST)
         {
             if (keys & KEY_B)
@@ -515,7 +615,7 @@ int main(void)
 
                     if (round_state.current_score >= round_state.target_score)
                     {
-                        advance_blind();
+                        complete_blind(&screen);
                     }
                     else if (hands_remaining == 0)
                     {
