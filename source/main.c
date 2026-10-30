@@ -16,6 +16,8 @@ static int joker_count = 0;
 static ShopOffer shop_offers[SHOP_OFFER_COUNT];
 static int shop_cursor = 0;
 static int shop_message = 0;
+static JokerType shop_purchased_types[SHOP_OFFER_COUNT];
+static int shop_purchased_count = 0;
 
 typedef enum
 {
@@ -376,9 +378,21 @@ static void evaluate_selection(void)
 
 static void open_shop(void)
 {
-    shop_generate_offers(shop_offers);
+    shop_generate_offers(shop_offers, jokers, joker_count);
     shop_cursor = 0;
     shop_message = 0;
+    shop_purchased_count = 0;
+}
+
+static int shop_joker_already_purchased(JokerType type)
+{
+    for (int i = 0; i < shop_purchased_count; i++)
+    {
+        if (shop_purchased_types[i] == type)
+            return 1;
+    }
+
+    return 0;
 }
 
 static void draw_screen(GameScreen screen)
@@ -410,8 +424,8 @@ static void draw_screen(GameScreen screen)
                    i == shop_cursor ? '>' : ' ',
                    shop_offers[i].name,
                    shop_offers[i].price);
-            printf("  +%d chips\n\n",
-                   shop_offers[i].joker.value);
+            printf("  %s\n\n",
+                   joker_description(shop_offers[i].joker.type));
         }
 
         printf("Cruceta: elegir oferta\n");
@@ -424,6 +438,10 @@ static void draw_screen(GameScreen screen)
             printf("\nDinero insuficiente");
         else if (shop_message == 3)
             printf("\nNo hay espacio para mas Jokers");
+        else if (shop_message == 4)
+        {
+            printf("Ya compraste en esta tienda.");
+        }
 
         return;
     }
@@ -551,7 +569,14 @@ int main(void)
 
             if (keys & KEY_A)
             {
-                if (joker_count >= MAX_JOKERS)
+                JokerType selected_type =
+                    shop_offers[shop_cursor].joker.type;
+
+                if (shop_joker_already_purchased(selected_type))
+                {
+                    shop_message = 4;
+                }
+                else if (joker_count >= MAX_JOKERS)
                 {
                     shop_message = 3;
                 }
@@ -564,6 +589,11 @@ int main(void)
                                         MAX_JOKERS, &money))
                 {
                     shop_message = 1;
+
+                    shop_purchased_types[shop_purchased_count] =
+                        selected_type;
+
+                    shop_purchased_count++;
                 }
 
                 redraw = 1;

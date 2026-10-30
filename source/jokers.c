@@ -5,31 +5,66 @@ const char *joker_name(JokerType type)
 {
     switch (type)
     {
+    case JOKER_BONUS_CHIPS: return "Joker de fichas";
+    case JOKER_BASE: return "Joker";
+    case JOKER_GREEDY: return "Greedy Joker";
+    case JOKER_JOLLY: return "Jolly Joker";
+    case JOKER_ZANY: return "Zany Joker";
+    case JOKER_MAD: return "Mad Joker";
+    case JOKER_CRAZY: return "Crazy Joker";
+    case JOKER_DROLL: return "Droll Joker";
+    case JOKER_SLY: return "Sly Joker";
+    case JOKER_HALF: return "Half Joker";
+    case JOKER_EVEN_STEVEN: return "Even Steven";
+    case JOKER_SHOWMAN: return "Showman";
+    case JOKER_NONE:
+    default: return "Vacio";
+    }
+}
+
+const char *joker_description(JokerType type)
+{
+    switch (type)
+    {
     case JOKER_BONUS_CHIPS:
-        return "Joker de fichas";
+        return "+20 fichas";
+
     case JOKER_BASE:
-        return "Joker";
+        return "+4 Mult";
+
     case JOKER_GREEDY:
-        return "Greedy Joker";
+        return "+3 Mult por cada Diamante puntuable";
+
     case JOKER_JOLLY:
-        return "Jolly Joker";
+        return "+8 Mult si la mano contiene Pareja";
+
     case JOKER_ZANY:
-        return "Zany Joker";
+        return "+12 Mult si la mano contiene Trio";
+
     case JOKER_MAD:
-        return "Mad Joker";
+        return "+10 Mult si la mano contiene Doble Pareja";
+
     case JOKER_CRAZY:
-        return "Crazy Joker";
+        return "+12 Mult si la mano contiene Escalera";
+
     case JOKER_DROLL:
-        return "Droll Joker";
+        return "+10 Mult si la mano contiene Color";
+
     case JOKER_SLY:
-        return "Sly Joker";
+        return "+50 fichas si la mano contiene Pareja";
+
     case JOKER_HALF:
-        return "Half Joker";
+        return "+20 Mult si juegas 3 cartas o menos";
+
     case JOKER_EVEN_STEVEN:
-        return "Even Steven";
+        return "+4 Mult por cada carta par puntuable";
+
+    case JOKER_SHOWMAN:
+        return "Permite Jokers repetidos en la tienda";
+
     case JOKER_NONE:
     default:
-        return "Vacio";
+        return "";
     }
 }
 
@@ -37,6 +72,9 @@ int joker_price(JokerType type)
 {
     if (type == JOKER_NONE)
         return 0;
+
+    if (type == JOKER_SHOWMAN)
+        return 5;
 
     return 4;
 }
@@ -149,6 +187,7 @@ void jokers_apply(Joker *jokers, int joker_count,
             }
             break;
 
+        case JOKER_SHOWMAN:
         case JOKER_NONE:
         default:
             break;

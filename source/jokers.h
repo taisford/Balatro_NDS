@@ -6,7 +6,8 @@
 
 #define MAX_JOKERS 5
 
-typedef enum {
+typedef enum
+{
     JOKER_NONE,
     JOKER_BONUS_CHIPS,
     JOKER_BASE,
@@ -18,10 +19,12 @@ typedef enum {
     JOKER_DROLL,
     JOKER_SLY,
     JOKER_HALF,
-    JOKER_EVEN_STEVEN
+    JOKER_EVEN_STEVEN,
+    JOKER_SHOWMAN
 } JokerType;
 
-typedef struct {
+typedef struct
+{
     JokerType type;
     int value;
 } Joker;
@@ -32,6 +35,8 @@ void jokers_apply(Joker *jokers, int joker_count,
                   int *chips, int *mult);
 
 const char *joker_name(JokerType type);
+const char *joker_description(JokerType type);
 int joker_price(JokerType type);
+
 
 #endif

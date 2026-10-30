@@ -6,13 +6,17 @@
 
 #define SHOP_OFFER_COUNT 3
 
-typedef struct {
+typedef struct
+{
     Joker joker;
     const char *name;
     int price;
 } ShopOffer;
 
-void shop_generate_offers(ShopOffer *offers);
+void shop_generate_offers(ShopOffer *offers,
+                          const Joker *jokers,
+                          int joker_count);
+
 int shop_buy_joker(const ShopOffer *offer,
                    Joker *jokers, int *joker_count,
                    int max_jokers, int *money);
