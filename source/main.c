@@ -303,6 +303,19 @@ static void sort_hand(void)
         return;
     }
 
+    Card selected_cards[HAND_SIZE];
+    int selected_cards_count = 0;
+
+    /* Guardar las cartas seleccionadas */
+    for (int i = 0; i < hand_count; i++)
+    {
+        if (selected[i])
+        {
+            selected_cards[selected_cards_count++] = hand[i];
+        }
+    }
+
+    /* Ordenar la mano */
     if (sort_mode == 0)
     {
         qsort(hand, hand_count, sizeof(Card), card_suit_value);
@@ -312,6 +325,28 @@ static void sort_hand(void)
     {
         qsort(hand, hand_count, sizeof(Card), card_value_desc);
         sort_mode = 0;
+    }
+
+    /* Reconstruir la selección según las cartas */
+    for (int i = 0; i < HAND_SIZE; i++)
+    {
+        selected[i] = 0;
+    }
+
+    selected_count = 0;
+
+    for (int i = 0; i < hand_count; i++)
+    {
+        for (int j = 0; j < selected_cards_count; j++)
+        {
+            if (hand[i].rank == selected_cards[j].rank &&
+                hand[i].suit == selected_cards[j].suit)
+            {
+                selected[i] = 1;
+                selected_count++;
+                break;
+            }
+        }
     }
 
     cursor = 0;

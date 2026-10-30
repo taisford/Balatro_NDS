@@ -77,6 +77,7 @@ ScoreResult score_hand(const Card *cards, int count,
     result.total_mult = result.base_mult;
 
     jokers_apply((Joker *)jokers, joker_count,
+                 cards, count, poker,
                  &result.total_chips, &result.total_mult);
 
     result.score = result.total_chips * result.total_mult;
