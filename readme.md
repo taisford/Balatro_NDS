@@ -38,9 +38,9 @@ The core gameplay loop is still incomplete. Current work is focused on building 
 
 
 <p align="center">
-  <img src="media/bal1.png" width="250" alt="Balatro">
-  <img src="media/bal2.png" width="250" alt="Balatro">
-  <img src="media/bal3.png" width="250" alt="Balatro">
+  <img src="media/bal4.png" width="250" alt="Balatro">
+  <img src="media/bal5.png" width="250" alt="Balatro">
+  <img src="media/bal6.png" width="250" alt="Balatro">
 </p>
 
 Planned:

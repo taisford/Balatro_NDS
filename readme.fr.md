@@ -37,9 +37,9 @@ Le projet est actuellement un prototype de base reposant sur du texte. Les fonct
 La boucle de jeu principale est encore incomplète. Le développement se concentre sur la mise en place des bases avant de passer à une expérience complète organisée en manches.
 
 <p align="center">
-  <img src="media/bal1.png" width="250" alt="Balatro">
-  <img src="media/bal2.png" width="250" alt="Balatro">
-  <img src="media/bal3.png" width="250" alt="Balatro">
+  <img src="media/bal4.png" width="250" alt="Balatro">
+  <img src="media/bal5.png" width="250" alt="Balatro">
+  <img src="media/bal6.png" width="250" alt="Balatro">
 </p>
 
 ### Fonctionnalités prévues

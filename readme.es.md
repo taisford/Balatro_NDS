@@ -38,9 +38,9 @@ Actualmente, el proyecto es un prototipo básico basado en texto. Estas son algu
 El ciclo principal de juego todavía está incompleto. El desarrollo se centra en construir las bases antes de avanzar hacia una experiencia completa basada en rondas.
 
 <p align="center">
-  <img src="media/bal1.png" width="250" alt="Balatro">
-  <img src="media/bal2.png" width="250" alt="Balatro">
-  <img src="media/bal3.png" width="250" alt="Balatro">
+  <img src="media/bal4.png" width="250" alt="Balatro">
+  <img src="media/bal5.png" width="250" alt="Balatro">
+  <img src="media/bal6.png" width="250" alt="Balatro">
 </p>
 
 ### Funciones planeadas

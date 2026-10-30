@@ -37,9 +37,9 @@ PC版 *Balatro* のゲーム体験をNintendo DSのハードウェア上で可�
 ゲームの基本的な進行ループはまだ完成していません。現在は、ラウンド制のゲーム体験を実装する前段階として、基礎部分の開発を進めています。
 
 <p align="center">
-  <img src="media/bal1.png" width="250" alt="Balatro">
-  <img src="media/bal2.png" width="250" alt="Balatro">
-  <img src="media/bal3.png" width="250" alt="Balatro">
+  <img src="media/bal4.png" width="250" alt="Balatro">
+  <img src="media/bal5.png" width="250" alt="Balatro">
+  <img src="media/bal6.png" width="250" alt="Balatro">
 </p>
 
 ### 今後の実装予定
