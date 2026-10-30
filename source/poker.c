@@ -16,8 +16,7 @@ const char *poker_hand_name(PokerHandType type)
         "Straight Flush",
         "Five of a Kind",
         "Flush House",
-        "Flush Five"
-    };
+        "Flush Five"};
 
     if (type < HAND_HIGH_CARD || type > HAND_FLUSH_FIVE)
         return "Unknown";
@@ -25,34 +24,96 @@ const char *poker_hand_name(PokerHandType type)
     return names[type];
 }
 
+static int find_straight(const Card *cards, int count,
+                         int suit_filter, int *high_card)
+{
+    int rank_mask = 0;
+
+    for (int i = 0; i < count; i++)
+    {
+        if (suit_filter >= 0 &&
+            cards[i].suit != suit_filter)
+            continue;
+
+        int rank = cards[i].rank;
+        rank_mask |= 1 << rank;
+    }
+
+    for (int high = 14; high >= 5; high--)
+    {
+        int found = 1;
+
+        for (int r = high - 4; r <= high; r++)
+        {
+            if (!(rank_mask & (1 << r)))
+            {
+                found = 0;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            *high_card = high;
+            return 1;
+        }
+    }
+
+    /* A-2-3-4-5 */
+    if ((rank_mask & (1 << 14)) &&
+        (rank_mask & (1 << 2)) &&
+        (rank_mask & (1 << 3)) &&
+        (rank_mask & (1 << 4)) &&
+        (rank_mask & (1 << 5)))
+    {
+        *high_card = 5;
+        return 1;
+    }
+
+    return 0;
+}
+
 PokerResult poker_evaluate(const Card *cards, int count)
 {
     PokerResult result = {0};
     result.type = HAND_HIGH_CARD;
 
-    if (cards == NULL || count <= 0 || count > 5)
-    	return result;
+    if (cards == NULL || count < 1 || count > 5)
+        return result;
+
+    for (int i = 0; i < count; i++)
+    {
+        if (cards[i].rank < RANK_2 ||
+            cards[i].rank > RANK_ACE ||
+            cards[i].suit < SUIT_DIAMONDS ||
+            cards[i].suit > SUIT_SPADES)
+        {
+            return result;
+        }
+    }
 
     int rank_count[15] = {0};
     int suit_count[4] = {0};
-    int rank_mask = 0;
     int flush_suit = -1;
 
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++)
+    {
         int rank = cards[i].rank;
         int suit = cards[i].suit;
 
-        if (rank >= 2 && rank <= 14) {
+        if (rank >= 2 && rank <= 14)
+        {
             rank_count[rank]++;
-            rank_mask |= 1 << rank;
         }
 
         if (suit >= 0 && suit < 4)
             suit_count[suit]++;
     }
 
-    for (int s = 0; s < 4; s++) {
-        if (suit_count[s] >= 5) {
+    for (int s = 0; s < 4; s++)
+    {
+        if (suit_count[s] >= 5)
+        {
             flush_suit = s;
             break;
         }
@@ -67,81 +128,99 @@ PokerResult poker_evaluate(const Card *cards, int count)
     int four_rank = 0;
     int five_rank = 0;
 
-    for (int r = 14; r >= 2; r--) {
-        if (rank_count[r] == 2) {
+    for (int r = 14; r >= 2; r--)
+    {
+        if (rank_count[r] == 2)
+        {
             pairs++;
-            if (!pair_rank) pair_rank = r;
-        } else if (rank_count[r] == 3) {
+            if (!pair_rank)
+                pair_rank = r;
+        }
+        else if (rank_count[r] == 3)
+        {
             triples++;
             triple_rank = r;
-        } else if (rank_count[r] == 4) {
+        }
+        else if (rank_count[r] == 4)
+        {
             fours++;
             four_rank = r;
-        } else if (rank_count[r] >= 5) {
+        }
+        else if (rank_count[r] >= 5)
+        {
             fives++;
             five_rank = r;
         }
     }
 
     int straight_high = 0;
-    int run = 0;
+    int straight = find_straight(cards, count, -1,
+                                 &straight_high);
 
-    for (int r = 2; r <= 14; r++) {
-        if (rank_mask & (1 << r)) {
-            run++;
-            if (run >= 5)
-                straight_high = r;
-        } else {
-            run = 0;
-        }
-    }
+    int straight_flush_high = 0;
+    int straight_flush = 0;
 
-    /* Ace-low straight: A, 2, 3, 4, 5. */
-    if (!straight_high &&
-        (rank_mask & (1 << 14)) &&
-        (rank_mask & (1 << 2)) &&
-        (rank_mask & (1 << 3)) &&
-        (rank_mask & (1 << 4)) &&
-        (rank_mask & (1 << 5))) {
-        straight_high = 5;
+    if (flush_suit >= 0)
+    {
+        straight_flush = find_straight(
+            cards, count, flush_suit,
+            &straight_flush_high);
     }
 
     int flush_five = 0;
     int flush_house = 0;
-    int straight_flush = 0;
 
-    if (count == 5 && flush_suit >= 0) {
+    if (count == 5 && flush_suit >= 0)
+    {
         if (fives)
             flush_five = 1;
 
         if (triples && pairs)
             flush_house = 1;
-
-        if (straight_high)
-            straight_flush = 1;
     }
 
-    if (flush_five) {
+    if (flush_five)
+    {
         result.type = HAND_FLUSH_FIVE;
-    } else if (flush_house) {
+    }
+    else if (flush_house)
+    {
         result.type = HAND_FLUSH_HOUSE;
-    } else if (fives) {
+    }
+    else if (fives)
+    {
         result.type = HAND_FIVE_KIND;
-    } else if (straight_flush) {
+    }
+    else if (straight_flush)
+    {
         result.type = HAND_STRAIGHT_FLUSH;
-    } else if (fours) {
+    }
+    else if (fours)
+    {
         result.type = HAND_FOUR_KIND;
-    } else if (triples && pairs) {
+    }
+    else if (triples && pairs)
+    {
         result.type = HAND_FULL_HOUSE;
-    } else if (flush_suit >= 0) {
+    }
+    else if (flush_suit >= 0)
+    {
         result.type = HAND_FLUSH;
-    } else if (straight_high) {
+    }
+    else if (straight)
+    {
         result.type = HAND_STRAIGHT;
-    } else if (triples) {
+    }
+    else if (triples)
+    {
         result.type = HAND_THREE_KIND;
-    } else if (pairs >= 2) {
+    }
+    else if (pairs >= 2)
+    {
         result.type = HAND_TWO_PAIR;
-    } else if (pairs == 1) {
+    }
+    else if (pairs == 1)
+    {
         result.type = HAND_PAIR;
     }
 
@@ -150,11 +229,13 @@ PokerResult poker_evaluate(const Card *cards, int count)
      * This first version handles standard hands; special
      * Balatro modifiers will be added later.
      */
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++)
+    {
         int r = cards[i].rank;
         int include = 0;
 
-        switch (result.type) {
+        switch (result.type)
+        {
         case HAND_FLUSH:
         case HAND_FLUSH_FIVE:
         case HAND_FLUSH_HOUSE:
@@ -162,9 +243,15 @@ PokerResult poker_evaluate(const Card *cards, int count)
             break;
 
         case HAND_STRAIGHT:
-        case HAND_STRAIGHT_FLUSH:
             include = (straight_high == 5 && r == 14) ||
                       (r >= straight_high - 4 && r <= straight_high);
+            break;
+
+        case HAND_STRAIGHT_FLUSH:
+            include = cards[i].suit == flush_suit &&
+                      ((straight_flush_high == 5 && r == 14) ||
+                       (r >= straight_flush_high - 4 &&
+                        r <= straight_flush_high));
             break;
 
         case HAND_FOUR_KIND:
@@ -200,15 +287,18 @@ PokerResult poker_evaluate(const Card *cards, int count)
             break;
         }
 
-        if (include && result.scoring_count < HAND_SIZE) {
+        if (include && result.scoring_count < HAND_SIZE)
+        {
             result.scoring_indices[result.scoring_count++] = i;
         }
     }
 
     /* High Card scores only the highest card. */
-    if (result.type == HAND_HIGH_CARD && count > 0) {
+    if (result.type == HAND_HIGH_CARD && count > 0)
+    {
         int best = 0;
-        for (int i = 1; i < count; i++) {
+        for (int i = 1; i < count; i++)
+        {
             if (cards[i].nominal > cards[best].nominal)
                 best = i;
         }

@@ -4,16 +4,19 @@
 #include <stdint.h>
 
 #define DECK_SIZE 52
+#define MAX_DECK_SIZE 104
 #define HAND_SIZE 8
 
-typedef enum {
+typedef enum
+{
     SUIT_DIAMONDS,
     SUIT_CLUBS,
     SUIT_HEARTS,
     SUIT_SPADES
 } Suit;
 
-typedef enum {
+typedef enum
+{
     RANK_2 = 2,
     RANK_3,
     RANK_4,
@@ -29,15 +32,54 @@ typedef enum {
     RANK_ACE
 } Rank;
 
-typedef struct {
+typedef enum
+{
+    ENHANCEMENT_NONE,
+    ENHANCEMENT_BONUS,
+    ENHANCEMENT_MULT,
+    ENHANCEMENT_WILD,
+    ENHANCEMENT_GLASS,
+    ENHANCEMENT_STEEL,
+    ENHANCEMENT_STONE,
+    ENHANCEMENT_GOLD,
+    ENHANCEMENT_LUCKY
+} CardEnhancement;
+
+typedef enum
+{
+    EDITION_NONE,
+    EDITION_FOIL,
+    EDITION_HOLOGRAPHIC,
+    EDITION_POLYCHROME,
+    EDITION_NEGATIVE
+} CardEdition;
+
+typedef enum
+{
+    SEAL_NONE,
+    SEAL_GOLD,
+    SEAL_RED,
+    SEAL_BLUE,
+    SEAL_PURPLE
+} CardSeal;
+
+typedef struct
+{
     Suit suit;
     Rank rank;
     uint8_t id;
     uint8_t nominal;
+
+    CardEnhancement enhancement;
+    CardEdition edition;
+    CardSeal seal;
+
+    uint8_t debuffed;
 } Card;
 
-typedef struct {
-    Card cards[DECK_SIZE];
+typedef struct
+{
+    Card cards[MAX_DECK_SIZE];
     int next_card;
     int card_count;
 } Deck;
