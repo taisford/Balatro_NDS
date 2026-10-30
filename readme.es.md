@@ -43,14 +43,16 @@ El ciclo principal de juego todavía está incompleto. El desarrollo se centra e
   <img src="media/bal6.png" width="250" alt="Balatro">
 </p>
 
-### Funciones planeadas
+### En desarrollo / Planificado
 
-- Progresión de rondas, ciegas, objetivos de puntuación y condiciones de victoria o derrota.
+- Ampliación del sistema de comodines (Jokers) con más efectos originales.
+- Ofertas aleatorias de comodines en la tienda, con tres comodines disponibles por partida.
+- Progresión completa de rondas, ciegas y objetivos de puntuación.
 - Límites de manos y descartes.
-- Robar cartas de reemplazo y administrar la baraja entre jugadas.
-- Comodines, mejoras de cartas y otras mecánicas del juego.
-- Cartas gráficas, animaciones y una interfaz más fiel adaptada a las dos pantallas de Nintendo DS.
-- Optimización adicional para el hardware de Nintendo DS.
+- Reemplazo de cartas y una mejor gestión del mazo.
+- Mecánicas de juego adicionales y mejoras para las cartas.
+- Gráficos y animaciones mejorados, junto con una interfaz más fiel y adaptada a las dos pantallas de Nintendo DS.
+- Mayor optimización para el hardware de Nintendo DS.
 
 El proyecto se encuentra en una etapa temprana de desarrollo; las funciones y la compatibilidad pueden cambiar a medida que avance.
 

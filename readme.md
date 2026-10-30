@@ -43,13 +43,15 @@ The core gameplay loop is still incomplete. Current work is focused on building 
   <img src="media/bal6.png" width="250" alt="Balatro">
 </p>
 
-Planned:
+### In Development / Planned
 
-- Round progression, blinds, scoring targets, and win/loss conditions.
+- Expanding the Joker system with more original effects.
+- Randomized Joker shop offers, with three Jokers available per run.
+- Complete round progression, blinds, and scoring targets.
 - Hand and discard limits.
-- Drawing replacement cards and managing the deck between plays.
-- Jokers, card enhancements, and other gameplay mechanics.
-- Graphical cards, animations, and a more faithful interface adapted to the Nintendo DS dual screens.
+- Card replacement and improved deck management.
+- Additional gameplay mechanics and card enhancements.
+- Improved graphics, animations, and a more faithful interface adapted to the Nintendo DS dual screens.
 - Further optimization for Nintendo DS hardware.
 
 This is an early work in progress; features and compatibility may change as development continues.

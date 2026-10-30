@@ -42,14 +42,16 @@ La boucle de jeu principale est encore incomplète. Le développement se concent
   <img src="media/bal6.png" width="250" alt="Balatro">
 </p>
 
-### Fonctionnalités prévues
+### En développement / Prévu
 
-- Progression des manches, blinds, objectifs de score et conditions de victoire ou de défaite.
+- Extension du système de Jokers avec davantage d'effets originaux.
+- Offres aléatoires de Jokers dans la boutique, avec trois Jokers disponibles par partie.
+- Progression complète des manches, des blindes et des objectifs de score.
 - Limites de mains et de défausses.
-- Piocher des cartes de remplacement et gérer le paquet entre les coups.
-- Jokers, améliorations de cartes et autres mécaniques du jeu.
-- Cartes graphiques, animations et interface plus fidèle, adaptée aux deux écrans de la Nintendo DS.
-- Optimisations supplémentaires pour le matériel de la Nintendo DS.
+- Remplacement des cartes et amélioration de la gestion du paquet.
+- Mécaniques de jeu supplémentaires et améliorations des cartes.
+- Amélioration des graphismes et des animations, ainsi qu'une interface plus fidèle adaptée aux deux écrans de la Nintendo DS.
+- Optimisation supplémentaire pour le matériel de la Nintendo DS.
 
 Le projet en est encore à ses débuts ; les fonctionnalités et la compatibilité peuvent évoluer au fil du développement.
 
